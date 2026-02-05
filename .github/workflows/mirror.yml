@@ -1,0 +1,26 @@
+name: Mirror CSAPP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update system
+        run: sudo apt-get update
+
+      - name: Install tools
+        run: sudo apt-get install -y wget tar
+
+      - name: Download CSAPP site
+        run: |
+          wget -r -l inf -k -E -p -np http://csapp.cs.cmu.edu/
+          tar -czf csapp-site.tar.gz csapp.cs.cmu.edu
+
+      - name: Upload result
+        uses: actions/upload-artifact@v4
+        with:
+          name: csapp-site
+          path: csapp-site.tar.gz
