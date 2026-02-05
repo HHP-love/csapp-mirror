@@ -12,11 +12,24 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y wget tar
 
       - run: |
-          wget -r -l 3 -k -E -p -np \
-            --wait=1 --limit-rate=300k \
-            http://csapp.cs.cmu.edu/
+          # با تنظیمات aggressive برای اطمینان از دانلود
+          wget --no-check-certificate \
+               --user-agent="Mozilla/5.0" \
+               --recursive \
+               --level=3 \
+               --convert-links \
+               --adjust-extension \
+               --page-requisites \
+               --no-parent \
+               --wait=1 \
+               --limit-rate=300k \
+               --tries=3 \
+               --retry-connrefused \
+               --timeout=30 \
+               https://csapp.cs.cmu.edu/
+          
           tar -czf csapp-html.tar.gz csapp.cs.cmu.edu
-
+          
       - uses: actions/upload-artifact@v4
         with:
           name: csapp-html
