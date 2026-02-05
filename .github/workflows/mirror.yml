@@ -1,38 +1,23 @@
-name: Mirror CSAPP (Safe)
+name: CSAPP HTML
 
 on:
   workflow_dispatch:
 
 jobs:
-  mirror:
+  html:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
-      - name: Install tools
-        run: sudo apt-get update && sudo apt-get install -y wget tar
+      - run: sudo apt-get update && sudo apt-get install -y wget tar
 
-      - name: Download CSAPP (polite mode)
-        run: |
-          wget \
-            --recursive \
-            --level=5 \
-            --page-requisites \
-            --html-extension \
-            --convert-links \
-            --no-parent \
-            --wait=1 \
-            --limit-rate=300k \
-            --retry-connrefused \
-            --tries=10 \
-            --timeout=30 \
+      - run: |
+          wget -r -l 3 -k -E -p -np \
+            --wait=1 --limit-rate=300k \
             http://csapp.cs.cmu.edu/
+          tar -czf csapp-html.tar.gz csapp.cs.cmu.edu
 
-      - name: Archive
-        run: tar -czf csapp-site.tar.gz csapp.cs.cmu.edu
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: csapp-site
-          path: csapp-site.tar.gz
+          name: csapp-html
+          path: csapp-html.tar.gz
